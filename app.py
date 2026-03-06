@@ -7,7 +7,7 @@ from streamlit_agraph import agraph, Node, Edge, Config
 # 1. Sayfa Ayarları
 st.set_page_config(page_title="NeuroQuadruplex | Nörodejeneratif G4 Atlası", page_icon="🧬", layout="wide", initial_sidebar_state="expanded")
 
-# 2. ÜST DÜZEY ESTETİK CSS (Sekme Geçişlerindeki Silinmeyi Engelleyen Yama)
+# 2. ÜST DÜZEY ESTETİK CSS
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -41,7 +41,6 @@ st.markdown("""
     .header-subtitle { font-size: 16px; font-weight: 500; color: #cbd5e1; margin-top: 5px; letter-spacing: 0.5px;}
 
     /* 🔴 SEKME (TAB) GEÇİŞLERİNDEKİ SİLİNMEYİ İPTAL ETME 🔴 */
-    /* Animasyonları ve saydamlaşmayı (fade) kapatarak yazıları sabitliyoruz */
     .stTabs [data-baseweb="tab-panel"], div[role="tabpanel"] {
         background-color: #ffffff !important;
         opacity: 1 !important;
@@ -54,7 +53,6 @@ st.markdown("""
         box-shadow: 0 4px 15px rgba(0,0,0,0.02) !important;
     }
 
-    /* Sekme içindeki metinleri zorunlu koyu lacivert yapıyoruz ki beyazlıkta kaybolmasınlar */
     .stTabs [data-baseweb="tab-panel"] p, 
     .stTabs [data-baseweb="tab-panel"] h1, 
     .stTabs [data-baseweb="tab-panel"] h2, 
@@ -64,10 +62,9 @@ st.markdown("""
         color: #0f172a !important;
     }
 
-    /* Tablo Görünümü */
     [data-testid="stDataFrame"] { background-color: #ffffff !important; border-radius: 8px; padding: 10px; border: 1px solid #cbd5e1; opacity: 1 !important; }
     
-    /* 🟢 ÖZEL RENKLİ KUTULAR İÇİN İSTİSNALAR (Renkleri Bozulmasın Diye) 🟢 */
+    /* Özel Renkli Kutular */
     .g4-box { background: #0f172a !important; font-family: 'Courier New', monospace; padding: 15px; border-radius: 8px; font-size: 20px; font-weight: 800; letter-spacing: 4px; text-align: center; margin-top: 15px;}
     .g4-box, .g4-box * { color: #34d399 !important; }
     
@@ -89,20 +86,16 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Header (Beyin ve DNA İkonu)
-logo_html = """
-<div style="font-size: 45px; display: flex; align-items: center; justify-content: center; width: 85px; height: 85px; background: rgba(255,255,255,0.05); border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); letter-spacing: -5px;">
-🧠🧬
-</div>
-"""
+# 3. HEADER (BAŞLIK HATASININ ÇÖZÜLDÜĞÜ KISIM - Tek satıra ve sola yaslı hale getirildi)
+logo_html = '<div style="font-size: 45px; display: flex; align-items: center; justify-content: center; width: 85px; height: 85px; background: rgba(255,255,255,0.05); border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); letter-spacing: -5px;">🧠🧬</div>'
 
 st.markdown(f"""
 <div class="header-container">
-    {logo_html}
-    <div>
-        <h1 class="header-title">NeuroQuadruplex Atlas</h1>
-        <p class="header-subtitle">Nörodejeneratif Hastalıklar G-Quadruplex Terapötik Ağı</p>
-    </div>
+{logo_html}
+<div>
+<h1 class="header-title">NeuroQuadruplex Atlas</h1>
+<p class="header-subtitle">Nörodejeneratif Hastalıklar G-Quadruplex Terapötik Ağı</p>
+</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -203,34 +196,33 @@ try:
         elif "ALS" in hastalik: badge_class = "badge-als"
         elif "Huntington" in hastalik: badge_class = "badge-hun"
         
-        # Sizin istediğiniz o mükemmel 3'lü sekme yapısı!
         tab1, tab2, tab3 = st.tabs(["📝 Gen Analizi", "🧬 3D DNA Simülasyonu", "🕸️ Hastalık-Gen Ağı"])
         
         with tab1:
             st.markdown(f"### 🔬 Biyolojik Hedef: **{aktif_gen}**")
+            
+            # Kod Boşluk Hatasına Karşı Sola Yaslandı!
             st.markdown(f"""
-            <div class="info-card">
-                <span class="badge {badge_class}">{hastalik}</span>
-                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 200px;">
-                        <div class="metric-box"><div class="metric-title">🧠 Etkilenen Yolak</div><div class="metric-value">{row.iloc[2]}</div></div>
-                    </div>
-                    <div style="flex: 1; min-width: 200px;">
-                        <div class="metric-box"><div class="metric-title">⚠️ Mutasyonlar</div><div class="metric-value">{row.iloc[3]}</div></div>
-                    </div>
-                    <div style="flex: 1; min-width: 200px;">
-                        <div class="metric-box"><div class="metric-title">📍 G4 Bölgesi</div><div class="metric-value">{row.iloc[4]}</div></div>
-                    </div>
-                </div>
-                
-                <div class="metric-title" style="text-align: center; margin-top: 15px; color: #0ea5e9 !important;">🧬 Tespit Edilen PQS (G-Quadruplex) Dizilimi</div>
-                <div class="g4-box">{row.iloc[5]}</div>
-                
-                <div class="therapy-box">
-                    <span style="font-size: 18px;">💊</span> <b>Terapötik (İlaç) Potansiyeli:</b><br>{row.iloc[6]}
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+<div class="info-card">
+<span class="badge {badge_class}">{hastalik}</span>
+<div style="display: flex; gap: 20px; flex-wrap: wrap;">
+<div style="flex: 1; min-width: 200px;">
+<div class="metric-box"><div class="metric-title">🧠 Etkilenen Yolak</div><div class="metric-value">{row.iloc[2]}</div></div>
+</div>
+<div style="flex: 1; min-width: 200px;">
+<div class="metric-box"><div class="metric-title">⚠️ Mutasyonlar</div><div class="metric-value">{row.iloc[3]}</div></div>
+</div>
+<div style="flex: 1; min-width: 200px;">
+<div class="metric-box"><div class="metric-title">📍 G4 Bölgesi</div><div class="metric-value">{row.iloc[4]}</div></div>
+</div>
+</div>
+<div class="metric-title" style="text-align: center; margin-top: 15px; color: #0ea5e9 !important;">🧬 Tespit Edilen PQS (G-Quadruplex) Dizilimi</div>
+<div class="g4-box">{row.iloc[5]}</div>
+<div class="therapy-box">
+<span style="font-size: 18px;">💊</span> <b>Terapötik (İlaç) Potansiyeli:</b><br>{row.iloc[6]}
+</div>
+</div>
+""", unsafe_allow_html=True)
 
         with tab2:
             st.markdown(f"### 🧬 {aktif_gen} G-Quadruplex 3 Boyutlu Konformasyonu")
