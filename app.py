@@ -7,52 +7,52 @@ from streamlit_agraph import agraph, Node, Edge, Config
 # 1. Sayfa Ayarları
 st.set_page_config(page_title="NeuroQuadruplex | Nörodejeneratif G4 Atlası", page_icon="🧬", layout="wide", initial_sidebar_state="expanded")
 
-# 2. ÜST DÜZEY ESTETİK CSS (Gerçek DNA Arkaplanı ve Okunabilirlik Düzeltmesi)
+# 2. ÜST DÜZEY ESTETİK CSS (Silik DNA Filigranı ve Kusursuz Okunabilirlik)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
     html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
     
-    /* Gerçek 3D DNA Sarmalı Arkaplanı */
+    /* Arkada çok silik, estetik, GERÇEK BİR DNA SARMALI filigranı */
     .stApp {
-        background-color: #f0f2f6;
-        background-image: url("https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80");
-        background-size: cover;
-        background-position: center;
+        background-color: #f4f6f9;
+        background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Dna_strand_1.png/1024px-Dna_strand_1.png");
+        background-size: 50%; /* Çok büyük olmaması için */
+        background-position: right center;
         background-attachment: fixed;
+        background-repeat: no-repeat;
     }
     
-    /* DNA arka planını %85 beyazlatarak silikleştirir, böylece yazılar net okunur */
+    /* DNA'yı %93 oranında beyazlatarak kusursuz bir "watermark" (filigran) yapar, YAZILARI ASLA BOĞMAZ */
     .stApp::before {
         content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background-color: rgba(248, 250, 252, 0.85); 
+        background-color: rgba(248, 250, 252, 0.93); 
         z-index: -1; pointer-events: none;
     }
 
-    /* Beyin-DNA Logolu Şık Header */
+    /* Start-up tarzı Şık Header */
     .header-container {
         background: rgba(15, 23, 42, 0.90); backdrop-filter: blur(10px);
-        padding: 30px; border-radius: 16px; color: white; margin-bottom: 25px;
+        padding: 25px; border-radius: 16px; color: white; margin-bottom: 25px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.2);
-        display: flex; align-items: center; gap: 25px;
+        display: flex; align-items: center; gap: 20px;
     }
     .header-title { font-size: 38px; font-weight: 800; margin: 0; background: -webkit-linear-gradient(45deg, #38bdf8, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
-    .header-subtitle { font-size: 16px; font-weight: 500; color: #e2e8f0; margin-top: 5px; }
-    
-    /* SEKME GEÇİŞLERİNDEKİ YAZI SİLİNME SORUNUNUN ÇÖZÜMÜ */
+    .header-subtitle { font-size: 16px; font-weight: 500; color: #cbd5e1; margin-top: 5px; letter-spacing: 0.5px;}
+
+    /* SEKME VE TABLO OKUNABİLİRLİK DÜZELTMESİ (Kesin Beyaz Zemin - Siyah Yazı) */
     .stTabs [data-baseweb="tab-panel"] {
-        background-color: #ffffff !important; /* Sekmelerin altını kesin bembeyaz yapar */
+        background-color: #ffffff !important;
         padding: 20px; border-radius: 12px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        color: #0f172a !important;
+        border: 1px solid #e2e8f0;
     }
     
-    /* Tablonun görünmez olma hatasının çözümü */
     [data-testid="stDataFrame"] { background-color: #ffffff !important; border-radius: 8px; padding: 10px; border: 1px solid #cbd5e1; }
     [data-testid="stDataFrame"] * { color: #0f172a !important; }
 
-    /* Kartlar ve Kutular */
+    /* Kartlar */
     .info-card { background: white; padding: 25px; border-radius: 12px; border-left: 5px solid #38bdf8; border: 1px solid #e2e8f0;}
     .metric-box { background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 10px;}
     .metric-title { font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
@@ -69,12 +69,16 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Header (YENİ BEYİN VE DNA LOGOSU)
-logo_url = "https://cdn-icons-png.flaticon.com/512/2103/2103289.png"
+# 3. Header (Dış Bağlantı Gerektirmeyen, Asla Bozulmayacak Emojili Şık Logo)
+logo_html = """
+<div style="font-size: 45px; display: flex; align-items: center; justify-content: center; width: 85px; height: 85px; background: rgba(255,255,255,0.05); border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); letter-spacing: -5px;">
+🧠🧬
+</div>
+"""
 
 st.markdown(f"""
 <div class="header-container">
-    <img src="{logo_url}" width="90" style="filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.5)); background-color: rgba(255,255,255,0.1); border-radius: 50%; padding: 5px;">
+    {logo_html}
     <div>
         <h1 class="header-title">NeuroQuadruplex Atlas</h1>
         <p class="header-subtitle">Nörodejeneratif Hastalıklar G-Quadruplex Terapötik Ağı</p>
@@ -98,7 +102,7 @@ try:
     
     # 5. Sol Menü ve Arama
     with st.sidebar:
-        st.image(logo_url, width=80)
+        st.markdown(f'<div style="display: flex; justify-content: center; margin-bottom: 25px;">{logo_html}</div>', unsafe_allow_html=True)
         st.title("🔬 Atlas Filtresi")
         
         hastalik_listesi = df[hastalik_kolonu].dropna().unique().tolist()
@@ -122,18 +126,16 @@ try:
         csv = df.to_csv(index=False).encode('utf-8')
         st.download_button("💾 Atlası Dışa Aktar (.CSV)", data=csv, file_name='NeuroQuadruplex_Atlas.csv', mime='text/csv')
 
-    # Filtreleme
     gosterilen_df = hastalik_df
     if arama:
         gosterilen_df = gosterilen_df[gosterilen_df.apply(lambda row: row.astype(str).str.contains(arama, case=False).any(), axis=1)]
     elif secim != "Tüm Veritabanı ve Ağ Haritası":
         gosterilen_df = gosterilen_df[gosterilen_df[gen_kolonu] == secim]
 
-    # 6. GÖRÜNÜM KISMI (ANA SAYFA)
+    # 6. GÖRÜNÜM KISMI (ANA SAYFA - 3D DNA BURADAN KALDIRILDI)
     if (secim == "Tüm Veritabanı ve Ağ Haritası" and not arama) or len(gosterilen_df) > 1:
         
-        # ANA SAYFAYA DA 3D DNA SEKME OLARAK EKLENDİ!
-        tab_ag, tab_veri, tab_3d = st.tabs(["🕸️ Hastalık-Gen Ağı", "📚 Biyoinformatik Veritabanı", "🧬 3D DNA Simülasyonu"])
+        tab_ag, tab_veri = st.tabs(["🕸️ Hastalık-Gen Ağı", "📚 Biyoinformatik Veritabanı"])
         
         with tab_ag:
             st.markdown(f"### 🧠 Nörodejeneratif Etkileşim Haritası")
@@ -168,21 +170,9 @@ try:
             
         with tab_veri:
             st.markdown("### 📚 Veri Havuzu")
-            st.info("💡 Tablo verilerini inceleyebilir, dışa aktarabilirsiniz.")
             st.dataframe(gosterilen_df, use_container_width=True, hide_index=True)
-
-        with tab_3d:
-            st.markdown("### 🧬 Örnek G-Quadruplex (PQS) DNA Konformasyonu")
-            st.caption("Veritabanımızdaki genlerin hedeflediği örnek bir 3 boyutlu G-Quadruplex molekülü (PDB 1XAV). Farenizle modeli döndürebilir, tekerlek ile yakınlaştırıp uzaklaştırabilirsiniz. Spesifik bir genin hedefini görmek için sol menüden sadece 1 gen seçiniz.")
-            view = py3Dmol.view(query='pdb:1XAV', width=800, height=500)
-            view.setStyle({'cartoon': {'color': 'spectrum'}, 'stick': {'radius': 0.15}})
-            view.addSurface(py3Dmol.VDW, {'opacity': 0.2, 'color': 'white'})
-            view.setBackgroundColor('#ffffff') 
-            view.zoomTo()
-            html_code = view._make_html()
-            components.html(html_code, height=500, width=800)
         
-    # 7. GÖRÜNÜM (TEK BİR GEN SEÇİLDİĞİNDE)
+    # 7. GÖRÜNÜM (TEK BİR GEN SEÇİLDİĞİNDE - 3D DNA BURADA AKTİF!)
     elif len(gosterilen_df) == 1:
         row = gosterilen_df.iloc[0]
         hastalik = str(row.iloc[0])
@@ -193,6 +183,7 @@ try:
         elif "ALS" in hastalik: badge_class = "badge-als"
         elif "Huntington" in hastalik: badge_class = "badge-hun"
         
+        # 3D DNA SADECE BURADA VAR
         tab1, tab2 = st.tabs(["📝 Gen ve G4 Analizi", "🧬 3D DNA Simülasyonu"])
         
         with tab1:
