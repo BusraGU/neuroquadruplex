@@ -7,31 +7,30 @@ from streamlit_agraph import agraph, Node, Edge, Config
 # 1. Sayfa Ayarları
 st.set_page_config(page_title="NeuroQuadruplex | Nörodejeneratif G4 Atlası", page_icon="🧬", layout="wide", initial_sidebar_state="expanded")
 
-# 2. ÜST DÜZEY ESTETİK CSS (Silik DNA Filigranı ve Kusursuz Okunabilirlik)
+# 2. ÜST DÜZEY ESTETİK CSS (Sekme Geçişlerindeki Silinmeyi Engelleyen Yama)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
     html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
     
-    /* Arkada çok silik, estetik, GERÇEK BİR DNA SARMALI filigranı */
+    /* Gerçek DNA Sarmalı Filigranı */
     .stApp {
         background-color: #f4f6f9;
         background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Dna_strand_1.png/1024px-Dna_strand_1.png");
-        background-size: 50%; /* Çok büyük olmaması için */
+        background-size: 50%;
         background-position: right center;
         background-attachment: fixed;
         background-repeat: no-repeat;
     }
     
-    /* DNA'yı %93 oranında beyazlatarak kusursuz bir "watermark" (filigran) yapar, YAZILARI ASLA BOĞMAZ */
     .stApp::before {
         content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background-color: rgba(248, 250, 252, 0.93); 
         z-index: -1; pointer-events: none;
     }
 
-    /* Start-up tarzı Şık Header */
+    /* Şık Header */
     .header-container {
         background: rgba(15, 23, 42, 0.90); backdrop-filter: blur(10px);
         padding: 25px; border-radius: 16px; color: white; margin-bottom: 25px;
@@ -41,35 +40,56 @@ st.markdown("""
     .header-title { font-size: 38px; font-weight: 800; margin: 0; background: -webkit-linear-gradient(45deg, #38bdf8, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
     .header-subtitle { font-size: 16px; font-weight: 500; color: #cbd5e1; margin-top: 5px; letter-spacing: 0.5px;}
 
-    /* SEKME VE TABLO OKUNABİLİRLİK DÜZELTMESİ (Kesin Beyaz Zemin - Siyah Yazı) */
-    .stTabs [data-baseweb="tab-panel"] {
+    /* 🔴 SEKME (TAB) GEÇİŞLERİNDEKİ SİLİNMEYİ İPTAL ETME 🔴 */
+    /* Animasyonları ve saydamlaşmayı (fade) kapatarak yazıları sabitliyoruz */
+    .stTabs [data-baseweb="tab-panel"], div[role="tabpanel"] {
         background-color: #ffffff !important;
-        padding: 20px; border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        border: 1px solid #e2e8f0;
+        opacity: 1 !important;
+        visibility: visible !important;
+        animation: none !important;
+        transition: none !important;
+        padding: 20px !important;
+        border-radius: 12px !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02) !important;
     }
-    
-    [data-testid="stDataFrame"] { background-color: #ffffff !important; border-radius: 8px; padding: 10px; border: 1px solid #cbd5e1; }
-    [data-testid="stDataFrame"] * { color: #0f172a !important; }
 
-    /* Kartlar */
+    /* Sekme içindeki metinleri zorunlu koyu lacivert yapıyoruz ki beyazlıkta kaybolmasınlar */
+    .stTabs [data-baseweb="tab-panel"] p, 
+    .stTabs [data-baseweb="tab-panel"] h1, 
+    .stTabs [data-baseweb="tab-panel"] h2, 
+    .stTabs [data-baseweb="tab-panel"] h3, 
+    .stTabs [data-baseweb="tab-panel"] li,
+    .stTabs [data-baseweb="tab-panel"] span {
+        color: #0f172a !important;
+    }
+
+    /* Tablo Görünümü */
+    [data-testid="stDataFrame"] { background-color: #ffffff !important; border-radius: 8px; padding: 10px; border: 1px solid #cbd5e1; opacity: 1 !important; }
+    
+    /* 🟢 ÖZEL RENKLİ KUTULAR İÇİN İSTİSNALAR (Renkleri Bozulmasın Diye) 🟢 */
+    .g4-box { background: #0f172a !important; font-family: 'Courier New', monospace; padding: 15px; border-radius: 8px; font-size: 20px; font-weight: 800; letter-spacing: 4px; text-align: center; margin-top: 15px;}
+    .g4-box, .g4-box * { color: #34d399 !important; }
+    
+    .therapy-box { background: #ecfdf5 !important; border: 1px solid #10b981 !important; padding: 20px; border-radius: 8px; font-weight: 500; margin-top: 20px;}
+    .therapy-box, .therapy-box * { color: #065f46 !important; }
+    
+    .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; margin-bottom: 15px;}
+    .badge, .badge * { color: #ffffff !important; }
+    .badge-alz { background-color: #3b82f6 !important; } 
+    .badge-par { background-color: #8b5cf6 !important; } 
+    .badge-als { background-color: #ef4444 !important; }
+    .badge-hun { background-color: #f59e0b !important; }
+
+    /* Kartlar ve Metrikler */
     .info-card { background: white; padding: 25px; border-radius: 12px; border-left: 5px solid #38bdf8; border: 1px solid #e2e8f0;}
     .metric-box { background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 10px;}
-    .metric-title { font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
-    .metric-value { font-size: 16px; color: #0f172a; font-weight: 600; }
-    
-    .g4-box { background: #0f172a; color: #34d399; font-family: 'Courier New', monospace; padding: 15px; border-radius: 8px; font-size: 20px; font-weight: 800; letter-spacing: 4px; text-align: center; margin-top: 15px;}
-    .therapy-box { background: #ecfdf5; border: 1px solid #10b981; padding: 20px; border-radius: 8px; color: #065f46; font-weight: 500; margin-top: 20px;}
-    
-    .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; color: white; margin-bottom: 15px;}
-    .badge-alz { background-color: #3b82f6; } 
-    .badge-par { background-color: #8b5cf6; } 
-    .badge-als { background-color: #ef4444; }
-    .badge-hun { background-color: #f59e0b; }
+    .metric-title { font-size: 12px; color: #64748b !important; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
+    .metric-value { font-size: 16px; color: #0f172a !important; font-weight: 600; }
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Header (Dış Bağlantı Gerektirmeyen, Asla Bozulmayacak Emojili Şık Logo)
+# 3. Header (Beyin ve DNA İkonu)
 logo_html = """
 <div style="font-size: 45px; display: flex; align-items: center; justify-content: center; width: 85px; height: 85px; background: rgba(255,255,255,0.05); border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); letter-spacing: -5px;">
 🧠🧬
@@ -132,7 +152,7 @@ try:
     elif secim != "Tüm Veritabanı ve Ağ Haritası":
         gosterilen_df = gosterilen_df[gosterilen_df[gen_kolonu] == secim]
 
-    # 6. GÖRÜNÜM KISMI (ANA SAYFA - 3D DNA BURADAN KALDIRILDI)
+    # 6. GÖRÜNÜM KISMI (ANA SAYFA - AĞ VE TABLO)
     if (secim == "Tüm Veritabanı ve Ağ Haritası" and not arama) or len(gosterilen_df) > 1:
         
         tab_ag, tab_veri = st.tabs(["🕸️ Hastalık-Gen Ağı", "📚 Biyoinformatik Veritabanı"])
@@ -172,7 +192,7 @@ try:
             st.markdown("### 📚 Veri Havuzu")
             st.dataframe(gosterilen_df, use_container_width=True, hide_index=True)
         
-    # 7. GÖRÜNÜM (TEK BİR GEN SEÇİLDİĞİNDE - 3D DNA BURADA AKTİF!)
+    # 7. GÖRÜNÜM (TEK BİR GEN SEÇİLDİĞİNDE - 3 SEKME BİRDEN VAR!)
     elif len(gosterilen_df) == 1:
         row = gosterilen_df.iloc[0]
         hastalik = str(row.iloc[0])
@@ -183,8 +203,8 @@ try:
         elif "ALS" in hastalik: badge_class = "badge-als"
         elif "Huntington" in hastalik: badge_class = "badge-hun"
         
-        # 3D DNA SADECE BURADA VAR
-        tab1, tab2 = st.tabs(["📝 Gen ve G4 Analizi", "🧬 3D DNA Simülasyonu"])
+        # Sizin istediğiniz o mükemmel 3'lü sekme yapısı!
+        tab1, tab2, tab3 = st.tabs(["📝 Gen Analizi", "🧬 3D DNA Simülasyonu", "🕸️ Hastalık-Gen Ağı"])
         
         with tab1:
             st.markdown(f"### 🔬 Biyolojik Hedef: **{aktif_gen}**")
@@ -203,7 +223,7 @@ try:
                     </div>
                 </div>
                 
-                <div class="metric-title" style="text-align: center; margin-top: 15px; color: #0ea5e9;">🧬 Tespit Edilen PQS (G-Quadruplex) Dizilimi</div>
+                <div class="metric-title" style="text-align: center; margin-top: 15px; color: #0ea5e9 !important;">🧬 Tespit Edilen PQS (G-Quadruplex) Dizilimi</div>
                 <div class="g4-box">{row.iloc[5]}</div>
                 
                 <div class="therapy-box">
@@ -223,6 +243,21 @@ try:
             
             html_code = view._make_html()
             components.html(html_code, height=500, width=800)
+            
+        with tab3:
+            st.markdown(f"### 🕸️ {aktif_gen} Spesifik Etkileşim Ağı")
+            nodes, edges = [], []
+            yolak_basit = str(row.iloc[2]).split('/')[0].split(' ve ')[0].strip()
+            
+            nodes.append(Node(id=hastalik, label=hastalik, size=35, color="#ef4444", shape="box", font={'color': 'white', 'size': 16, 'face': 'Inter', 'bold': True}))
+            nodes.append(Node(id=yolak_basit, label=yolak_basit, size=25, color="#8b5cf6", shape="box", font={'color': 'white', 'size': 14, 'face': 'Inter'}))
+            nodes.append(Node(id=aktif_gen, label=aktif_gen, size=20, color="#0ea5e9", shape="box", font={'color': 'white', 'size': 16, 'face': 'Inter', 'bold': True}))
+            
+            edges.append(Edge(source=aktif_gen, target=yolak_basit, color="#cbd5e1", width=2))
+            edges.append(Edge(source=yolak_basit, target=hastalik, color="#fca5a5", width=2))
+            
+            config = Config(width="100%", height=500, directed=True, physics=True, hierarchical=False)
+            agraph(nodes=nodes, edges=edges, config=config)
 
 except Exception as e:
     st.error(f"⚠️ Sistem Başlatılıyor... Sayfayı 15 saniye sonra yenileyin. (Hata: {e})")
