@@ -1,31 +1,73 @@
 import streamlit as st
 import pandas as pd
+from stmol import showmol
+import py3Dmol
+from streamlit_agraph import agraph, Node, Edge, Config
 
-# 1. Sayfa Ayarları ve Tasarım (CSS)
-st.set_page_config(page_title="NeuroQuadruplex", page_icon="🧬", layout="wide")
+# 1. Sayfa Ayarları ve Tema
+st.set_page_config(page_title="NeuroQuadruplex | Alzheimer G4 Veritabanı", page_icon="🧬", layout="wide", initial_sidebar_state="expanded")
 
-# Özel CSS ile daha profesyonel bir görünüm (Biyoteknoloji start-up tarzı)
+# CSS: Bilimsel, Modern ve Şık Tasarım (Lacivert / Turkuaz / Beyaz)
 st.markdown("""
     <style>
-    .card { background-color: #ffffff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-left: 6px solid #2c3e50; margin-top: 20px;}
-    .g4-sequence { font-family: 'Courier New', Courier, monospace; background-color: #f8f9fa; padding: 15px; border-radius: 8px; color: #d35400; letter-spacing: 3px; font-weight: bold; font-size: 16px; text-align: center; border: 1px solid #e9ecef;}
-    .metric-label { font-size: 13px; color: #7f8c8d; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;}
-    .metric-value { font-size: 16px; color: #2c3e50; font-weight: 500;}
-    .highlight-box { background-color: #e8f8f5; padding: 15px; border-radius: 8px; border-left: 5px solid #1abc9c; margin-top: 20px;}
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
+    .stApp { background-color: #f8fafc; }
+    
+    /* Üst Banner */
+    .header-container {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        padding: 30px; border-radius: 16px; color: white; margin-bottom: 25px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 25px;
+    }
+    .header-title {
+        font-size: 42px; font-weight: 800; margin: 0; letter-spacing: -1px;
+        background: -webkit-linear-gradient(45deg, #38bdf8, #818cf8);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .header-subtitle { font-size: 16px; font-weight: 400; color: #cbd5e1; margin-top: 5px; }
+    
+    /* Kart Tasarımı */
+    .info-card { background-color: #ffffff; padding: 25px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; border-left: 5px solid #38bdf8;}
+    .metric-box { background: #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
+    .metric-title { font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+    .metric-value { font-size: 16px; color: #0f172a; font-weight: 600; }
+    
+    /* G4 Dizilimi Kutu */
+    .g4-box {
+        background: #0f172a; color: #34d399; font-family: 'Courier New', monospace;
+        padding: 20px; border-radius: 12px; font-size: 20px; font-weight: 800;
+        letter-spacing: 4px; text-align: center; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+        margin: 20px 0; border: 1px solid #1e293b;
+    }
+    
+    /* Terapötik Yorum */
+    .therapy-box { background: #ecfdf5; border: 1px solid #10b981; padding: 20px; border-radius: 12px; color: #065f46; font-weight: 500; line-height: 1.6; }
+    
+    /* Sekmeler */
+    .stTabs [data-baseweb="tab-list"] { gap: 20px; }
+    .stTabs [data-baseweb="tab"] {
+        height: 50px; background-color: #ffffff; border-radius: 10px 10px 0 0;
+        padding: 0 20px; font-weight: 600; color: #64748b; border: 1px solid #e2e8f0; border-bottom: none;
+    }
+    .stTabs [aria-selected="true"] { background-color: #f8fafc; color: #0ea5e9 !important; border-bottom: 3px solid #0ea5e9; }
     </style>
 """, unsafe_allow_html=True)
 
-# 2. Üst Kısım (Header)
-col1, col2 = st.columns([1, 10])
-with col1:
-    st.image("https://cdn-icons-png.flaticon.com/512/3022/3022300.png", width=70)
-with col2:
-    st.title("NeuroQuadruplex")
-    st.markdown("**Alzheimer Hastalığı G-Quadruplex (G4) ve Terapötik Hedefler Veritabanı**")
-st.divider()
+# 2. Kurumsal Header (Başlık ve Şık Logo)
+st.markdown("""
+<div class="header-container">
+    <img src="https://cdn-icons-png.flaticon.com/512/9322/9322127.png" width="90" style="filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.3));">
+    <div>
+        <h1 class="header-title">NeuroQuadruplex Platform</h1>
+        <p class="header-subtitle">Yüksek Çözünürlüklü Alzheimer Hastalığı G-Quadruplex (PQS) ve Terapötik Ağı</p>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-# 3. Veri Çekme Motoru (Google Sheets)
-@st.cache_data(ttl=60) # Veriyi 60 saniyede bir günceller
+# 3. Veri Çekme Motoru
+@st.cache_data(ttl=60)
 def load_data():
     sheet_id = "1FBU7cRTLMsL-k1UvaraQb4CTWCAqZBlJ4Vl3QbIJkkE"
     csv_url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv"
@@ -34,84 +76,139 @@ def load_data():
 
 try:
     df = load_data()
-    gen_kolonu = df.columns[0] # "Gen Sembolü" kolonu
+    gen_kolonu = df.columns[0]
+    yolak_kolonu = df.columns[1]
     
-    # 4. Sol Menü (Araştırma Paneli)
-    st.sidebar.title("🔍 Araştırma Paneli")
-    st.sidebar.markdown("İncelemek istediğiniz geni arayın veya listeden seçin.")
-    
-    # Arama veya Seçme
-    gen_listesi = df[gen_kolonu].dropna().unique().tolist()
-    secim = st.sidebar.selectbox("Gen Seçiniz:", ["Tüm Veritabanı"] + gen_listesi)
-    arama = st.sidebar.text_input("Veya Gen Sembolü Yazın (Örn: APP)", "")
-    
-    # Filtreleme Mantığı
+    # 4. Sol Menü ve Arama
+    with st.sidebar:
+        st.image("https://cdn-icons-png.flaticon.com/512/9322/9322127.png", width=60)
+        st.title("🔬 Arama Motoru")
+        
+        gen_listesi = df[gen_kolonu].dropna().unique().tolist()
+        secim = st.selectbox("İncelenecek Geni Seçin:", ["Tüm Veritabanı ve Ağ Haritası"] + sorted(gen_listesi))
+        arama = st.text_input("Gelişmiş Arama (Örn: Mikroglia, Tau)", "")
+        
+        st.divider()
+        st.markdown("### 📊 Platform Metrikleri")
+        st.metric(label="🧬 Taranan Toplam Gen", value=len(df))
+        st.metric(label="🎯 G4 Terapötik Hedefi", value=len(df[df.columns[3]].dropna()))
+        
+        st.divider()
+        csv = df.to_csv(index=False).encode('utf-8')
+        st.download_button("💾 Veritabanını Dışa Aktar (.CSV)", data=csv, file_name='NeuroQuadruplex_V2.csv', mime='text/csv')
+        st.caption("© 2026 NeuroQuadruplex BioTech")
+
+    # Filtreleme
     if arama:
-        gosterilen_df = df[df[gen_kolonu].astype(str).str.contains(arama, case=False, na=False)]
-    elif secim != "Tüm Veritabanı":
+        gosterilen_df = df[df.apply(lambda row: row.astype(str).str.contains(arama, case=False).any(), axis=1)]
+    elif secim != "Tüm Veritabanı ve Ağ Haritası":
         gosterilen_df = df[df[gen_kolonu] == secim]
     else:
         gosterilen_df = df
-        
-    # İstatistikler (Ana Ekran Üst)
-    st.markdown("### 📊 Veritabanı İstatistikleri")
-    c1, c2, c3 = st.columns(3)
-    c1.metric(label="🧬 Analiz Edilmiş Gen Sayısı", value=len(df))
-    c2.metric(label="🎯 G-Quadruplex Hedefi", value=len(df[df.columns[3]].dropna()))
-    c3.metric(label="🔄 Sistem Durumu", value="Canlı (API Aktif)")
-    st.divider()
 
-    # 5. Görünüm (Tüm Tablo veya Tek Gen Kartı)
-    if (secim == "Tüm Veritabanı" and not arama) or len(gosterilen_df) > 1:
-        st.subheader("📚 Biyoinformatik Veri Havuzu")
-        st.markdown("Aşağıdaki tablodan tüm genlerin özet verilerine ulaşabilir, sol menüden indirebilirsiniz.")
-        st.dataframe(gosterilen_df, use_container_width=True, hide_index=True)
+    # 5. Görünüm (Sekmeli Yapı)
+    if (secim == "Tüm Veritabanı ve Ağ Haritası" and not arama) or len(gosterilen_df) > 1:
+        tab_ag, tab_veri = st.tabs(["🕸️ Hücresel Yolak Ağı (Network)", "📚 Biyoinformatik Veritabanı"])
+        
+        with tab_ag:
+            st.markdown("### 🧠 Alzheimer Gen-Yolak Etkileşim Ağı")
+            st.info("Bu interaktif harita, genlerin hastalıkla ilgili hangi mekanizmalarda rol oynadığını gösterir. **Düğümleri (noktaları) farenizle sürükleyebilir, tekerlekle yakınlaştırabilirsiniz.**")
+            nodes = []
+            edges = []
+            
+            # Yolakları (Kırmızı) ve Genleri (Mavi) Ağ Olarak Çiz
+            yolaklar = set()
+            for p in df[yolak_kolonu].dropna():
+                basit_yolak = str(p).split('/')[0].split(' ve ')[0].strip() # Uzun isimleri kısalt
+                yolaklar.add(basit_yolak)
+                
+            for y in yolaklar:
+                nodes.append(Node(id=y, label=y, size=35, color="#ef4444", shape="diamond")) 
+                
+            for index, row in df.iterrows():
+                g_adi = str(row.iloc[0])
+                tam_yolak = str(row.iloc[1])
+                if pd.notna(g_adi) and pd.notna(tam_yolak):
+                    nodes.append(Node(id=g_adi, label=g_adi, size=20, color="#0ea5e9", shape="dot")) 
+                    bagli_oldugu_yolak = tam_yolak.split('/')[0].split(' ve ')[0].strip()
+                    edges.append(Edge(source=g_adi, target=bagli_oldugu_yolak, color="#cbd5e1"))
+                
+            config = Config(width="100%", height=600, directed=False, physics=True, hierarchical=False)
+            agraph(nodes=nodes, edges=edges, config=config)
+            
+        with tab_veri:
+            st.markdown("### 📚 Alzheimer - G4 Biyoinformatik Veri Havuzu")
+            st.dataframe(gosterilen_df, use_container_width=True, hide_index=True)
         
     elif len(gosterilen_df) == 1:
         row = gosterilen_df.iloc[0]
-        st.subheader(f"🔬 Araştırma Özeti: {row.iloc[0]}")
+        aktif_gen = row.iloc[0]
+        aktif_yolak = str(row.iloc[1])
         
-        # Profesyonel "Gen Kartı" Tasarımı
-        st.markdown(f"""
-        <div class="card">
-            <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-                <div style="flex: 1; min-width: 200px;">
-                    <div class="metric-label">🧠 İlgili Hücresel Yolak</div>
-                    <div class="metric-value">{row.iloc[1]}</div>
+        tab1, tab2, tab3 = st.tabs(["📝 Gen ve G4 Analizi", "🧬 3D DNA Simülasyonu", "🕸️ Hücresel Etkileşim Ağı"])
+        
+        # SEKME 1: ANALİZ KARTI
+        with tab1:
+            st.markdown(f"### 🔬 Biyolojik Hedef: **{aktif_gen}**")
+            st.markdown(f"""
+            <div class="info-card">
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <div class="metric-box"><div class="metric-title">🧠 İlgili Hücresel Yolak</div><div class="metric-value">{aktif_yolak}</div></div>
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <div class="metric-box"><div class="metric-title">⚠️ Klinik Mutasyonlar / GWAS</div><div class="metric-value">{row.iloc[2]}</div></div>
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <div class="metric-box"><div class="metric-title">📍 G4 Bölgesi (Lokalizasyon)</div><div class="metric-value">{row.iloc[3]}</div></div>
+                    </div>
                 </div>
-                <div style="flex: 1; min-width: 200px;">
-                    <div class="metric-label">⚠️ Önemli Mutasyonlar</div>
-                    <div class="metric-value">{row.iloc[2]}</div>
-                </div>
-                <div style="flex: 1; min-width: 200px;">
-                    <div class="metric-label">📍 G-Quadruplex Bölgesi</div>
-                    <div class="metric-value">{row.iloc[3]}</div>
+                
+                <div class="metric-title" style="text-align: center; margin-top: 15px; color: #0ea5e9;">🧬 Tespit Edilen PQS (G-Quadruplex) Dizilimi</div>
+                <div class="g4-box">{row.iloc[4]}</div>
+                
+                <div class="therapy-box">
+                    <span style="font-size: 18px;">💊</span> <b>Terapötik (İlaç) Potansiyeli ve Yorum:</b><br>{row.iloc[5]}
                 </div>
             </div>
-            
-            <div style="margin-top: 30px;">
-                <div class="metric-label" style="text-align: center;">🧬 Potansiyel G-Quadruplex Dizilimi (PQS)</div>
-                <div class="g4-sequence">{row.iloc[4]}</div>
-            </div>
-            
-            <div class="highlight-box">
-                <div class="metric-label" style="color: #16a085;">💊 Terapötik (İlaç) Potansiyeli ve Yorumu</div>
-                <div class="metric-value" style="font-size: 15px;">{row.iloc[5]}</div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
 
-    # 6. Veri İndirme Butonu (Ticari Kurumsal Hissiyatı İçin)
-    st.sidebar.divider()
-    st.sidebar.markdown("### 📥 Veri Dışa Aktarım")
-    csv = df.to_csv(index=False).encode('utf-8')
-    st.sidebar.download_button(
-        label="Tüm Veritabanını İndir (.CSV)",
-        data=csv,
-        file_name='NeuroQuadruplex_Export.csv',
-        mime='text/csv'
-    )
-    st.sidebar.caption("© 2026 NeuroQuadruplex")
+        # SEKME 2: 3D MODELLEME
+        with tab2:
+            st.markdown("### 🧬 G-Quadruplex 3 Boyutlu Konformasyonu")
+            st.caption("Farenizle modeli döndürebilir, tekerlek ile yakınlaştırıp uzaklaştırabilirsiniz. (Referans Model: PDB 1XAV - İnsan G4 DNA Yapısı)")
+            
+            # py3Dmol ile 3D DNA Çizimi
+            view = py3Dmol.view(query='pdb:1XAV', width=800, height=500)
+            view.setStyle({'cartoon': {'color': 'spectrum'}, 'stick': {'radius': 0.15}})
+            view.addSurface(py3Dmol.VDW, {'opacity': 0.2, 'color': 'white'})
+            view.setBackgroundColor('#f8fafc')
+            view.zoomTo()
+            showmol(view, height=500, width=800)
+
+        # SEKME 3: NETWORK AĞI
+        with tab3:
+            st.markdown(f"### 🕸️ {aktif_gen} Etkileşim Haritası")
+            st.info("Bu grafik, seçilen genin hücresel mekanizmalarla ve Alzheimer patolojisiyle olan etkileşimini haritalandırır. Düğümleri farenizle sürükleyebilirsiniz.")
+            
+            nodes, edges = [], []
+            
+            # Merkez ve Yolak Düğümleri
+            nodes.append(Node(id=aktif_gen, label=aktif_gen, size=35, color="#0ea5e9", shape="diamond"))
+            nodes.append(Node(id="G4", label="G-Quadruplex\nRegülasyonu", size=25, color="#f59e0b", shape="hexagon"))
+            nodes.append(Node(id="AD", label="Alzheimer\nHastalığı", size=40, color="#ef4444", shape="dot"))
+            nodes.append(Node(id="Yolak", label=aktif_yolak.split('/')[0].split(',')[0], size=30, color="#8b5cf6", shape="box"))
+            
+            if pd.notna(row.iloc[2]) and row.iloc[2] != "":
+                nodes.append(Node(id="Mut", label="Mutasyonlar:\n" + str(row.iloc[2]), size=20, color="#64748b", shape="text"))
+                edges.append(Edge(source="Mut", target=aktif_gen, label="Fonksiyonu Bozar", color="#94a3b8"))
+
+            edges.append(Edge(source="G4", target=aktif_gen, label="İfadeyi Kontrol Eder", color="#f59e0b"))
+            edges.append(Edge(source=aktif_gen, target="Yolak", label="Rol Alır", color="#0ea5e9"))
+            edges.append(Edge(source="Yolak", target="AD", label="Patolojiyi Etkiler", color="#8b5cf6"))
+            
+            config = Config(width="100%", height=500, directed=True, physics=True, hierarchical=False)
+            agraph(nodes=nodes, edges=edges, config=config)
 
 except Exception as e:
-    st.error(f"⚠️ Veritabanına bağlanılamadı. Lütfen Google Tablonun herkese açık olduğundan emin olun.")
+    st.error(f"⚠️ Sistem Başlatılıyor veya Veritabanı Bekleniyor... Sayfayı birazdan yenileyin. (Hata: {e})")
