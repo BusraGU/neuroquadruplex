@@ -103,7 +103,7 @@ st.markdown(f"""
 {logo_html}
 <div>
 <h1 class="header-title">NeuroQuadruplex Atlas</h1>
-<p class="header-subtitle">Pan-Neurodegenerative G-Quadruplex Therapeutic Network</p>
+<p class="header-subtitle">Neurodegenerative G-Quadruplex Therapeutic Network</p>
 </div>
 </div>
 """, unsafe_allow_html=True)
