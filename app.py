@@ -148,6 +148,17 @@ try:
         csv = df.to_csv(index=False).encode('utf-8')
         st.download_button("💾 Export Atlas (.CSV)", data=csv, file_name='NeuroQuadruplex_Global.csv', mime='text/csv')
 
+        # 🔴 İMZA VE YASAL UYARI (DISCLAIMER) 🔴
+        st.markdown("""
+        <div style="text-align: center; color: #64748b; font-size: 12px; margin-top: 30px; padding-top: 15px; border-top: 1px solid #cbd5e1;">
+            <p style="margin-bottom: 5px;"><b>© 2026 NeuroQuadruplex Atlas</b></p>
+            <p style="margin-bottom: 15px;">Created by <b>Büşra Uyar</b></p>
+            <p style="font-size: 10px; line-height: 1.4; font-style: italic; color: #94a3b8;">
+                Disclaimer: This platform and its database are intended for research and educational purposes only. It is not intended for clinical use, medical diagnosis, or treatment decisions.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
     gosterilen_df = hastalik_df
     if arama:
         gosterilen_df = gosterilen_df[gosterilen_df.apply(lambda row: row.astype(str).str.contains(arama, case=False).any(), axis=1)]
