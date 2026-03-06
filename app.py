@@ -1,13 +1,13 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
-from stmol import showmol
 import py3Dmol
 from streamlit_agraph import agraph, Node, Edge, Config
 
 # 1. Sayfa Ayarları ve Tema
 st.set_page_config(page_title="NeuroQuadruplex | Alzheimer G4 Veritabanı", page_icon="🧬", layout="wide", initial_sidebar_state="expanded")
 
-# CSS: Bilimsel, Modern ve Şık Tasarım (Lacivert / Turkuaz / Beyaz)
+# CSS: Bilimsel, Modern ve Şık Tasarım
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -44,14 +44,6 @@ st.markdown("""
     
     /* Terapötik Yorum */
     .therapy-box { background: #ecfdf5; border: 1px solid #10b981; padding: 20px; border-radius: 12px; color: #065f46; font-weight: 500; line-height: 1.6; }
-    
-    /* Sekmeler */
-    .stTabs [data-baseweb="tab-list"] { gap: 20px; }
-    .stTabs [data-baseweb="tab"] {
-        height: 50px; background-color: #ffffff; border-radius: 10px 10px 0 0;
-        padding: 0 20px; font-weight: 600; color: #64748b; border: 1px solid #e2e8f0; border-bottom: none;
-    }
-    .stTabs [aria-selected="true"] { background-color: #f8fafc; color: #0ea5e9 !important; border-bottom: 3px solid #0ea5e9; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -116,10 +108,10 @@ try:
             nodes = []
             edges = []
             
-            # Yolakları (Kırmızı) ve Genleri (Mavi) Ağ Olarak Çiz
+            # Yolakları ve Genleri Çiz
             yolaklar = set()
             for p in df[yolak_kolonu].dropna():
-                basit_yolak = str(p).split('/')[0].split(' ve ')[0].strip() # Uzun isimleri kısalt
+                basit_yolak = str(p).split('/')[0].split(' ve ')[0].strip()
                 yolaklar.add(basit_yolak)
                 
             for y in yolaklar:
@@ -173,18 +165,20 @@ try:
             </div>
             """, unsafe_allow_html=True)
 
-        # SEKME 2: 3D MODELLEME
+        # SEKME 2: 3D MODELLEME (HATASIZ DOĞRUDAN HTML KODU)
         with tab2:
             st.markdown("### 🧬 G-Quadruplex 3 Boyutlu Konformasyonu")
             st.caption("Farenizle modeli döndürebilir, tekerlek ile yakınlaştırıp uzaklaştırabilirsiniz. (Referans Model: PDB 1XAV - İnsan G4 DNA Yapısı)")
             
-            # py3Dmol ile 3D DNA Çizimi
+            # Doğrudan HTML Component ile Kusursuz Çizim (stmol kütüphanesini baypas ettik!)
             view = py3Dmol.view(query='pdb:1XAV', width=800, height=500)
             view.setStyle({'cartoon': {'color': 'spectrum'}, 'stick': {'radius': 0.15}})
             view.addSurface(py3Dmol.VDW, {'opacity': 0.2, 'color': 'white'})
             view.setBackgroundColor('#f8fafc')
             view.zoomTo()
-            showmol(view, height=500, width=800)
+            
+            html_code = view._make_html()
+            components.html(html_code, height=500, width=800)
 
         # SEKME 3: NETWORK AĞI
         with tab3:
