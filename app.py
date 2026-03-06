@@ -7,7 +7,7 @@ from streamlit_agraph import agraph, Node, Edge, Config
 # 1. Sayfa Ayarları
 st.set_page_config(page_title="NeuroQuadruplex | Nörodejeneratif G4 Atlası", page_icon="🧬", layout="wide", initial_sidebar_state="expanded")
 
-# 2. ÜST DÜZEY ESTETİK CSS
+# 2. ÜST DÜZEY ESTETİK CSS (Sekmeler Silindi, Beton Kasa ve Menü Butonları Eklendi)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -40,30 +40,47 @@ st.markdown("""
     .header-title { font-size: 38px; font-weight: 800; margin: 0; background: -webkit-linear-gradient(45deg, #38bdf8, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
     .header-subtitle { font-size: 16px; font-weight: 500; color: #cbd5e1; margin-top: 5px; letter-spacing: 0.5px;}
 
-    /* 🔴 SEKME (TAB) GEÇİŞLERİNDEKİ SİLİNMEYİ İPTAL ETME 🔴 */
-    .stTabs [data-baseweb="tab-panel"], div[role="tabpanel"] {
-        background-color: #ffffff !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        animation: none !important;
-        transition: none !important;
-        padding: 20px !important;
-        border-radius: 12px !important;
-        border: 1px solid #e2e8f0 !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.02) !important;
+    /* 🔴 İŞTE KESİN ÇÖZÜM: BEMBEYAZ İÇERİK KASASI (VAULT) 🔴 */
+    /* Animasyon (fade) olmadığı için bu kasa asla şeffaflaşmaz, beton gibi bembeyaz kalır. */
+    .main-content-box {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border: 1px solid #cbd5e1;
+        margin-top: 5px;
     }
-
-    .stTabs [data-baseweb="tab-panel"] p, 
-    .stTabs [data-baseweb="tab-panel"] h1, 
-    .stTabs [data-baseweb="tab-panel"] h2, 
-    .stTabs [data-baseweb="tab-panel"] h3, 
-    .stTabs [data-baseweb="tab-panel"] li,
-    .stTabs [data-baseweb="tab-panel"] span {
-        color: #0f172a !important;
-    }
-
-    [data-testid="stDataFrame"] { background-color: #ffffff !important; border-radius: 8px; padding: 10px; border: 1px solid #cbd5e1; opacity: 1 !important; }
     
+    /* Kasadaki her yazıyı zorunlu siyah/lacivert yapıyoruz */
+    .main-content-box p, .main-content-box h1, .main-content-box h2, .main-content-box h3, .main-content-box span {
+        color: #0f172a !important; 
+    }
+
+    [data-testid="stDataFrame"] { background-color: #ffffff !important; border-radius: 8px; padding: 10px; border: 1px solid #cbd5e1; }
+    [data-testid="stDataFrame"] * { color: #0f172a !important; }
+    
+    /* Radyo Butonlarını Şık Menü Butonlarına Dönüştürme Sihri */
+    div[role="radiogroup"] {
+        background-color: #ffffff;
+        padding: 5px;
+        border-radius: 12px;
+        border: 1px solid #cbd5e1;
+        display: inline-flex;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        margin-bottom: 10px;
+    }
+    div[role="radiogroup"] label {
+        background-color: transparent !important;
+        padding: 10px 20px !important;
+        border-radius: 8px !important;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+    div[role="radiogroup"] label:hover { background-color: #f1f5f9 !important; }
+    div[role="radiogroup"] label[data-checked="true"] { background-color: #0f172a !important; }
+    div[role="radiogroup"] label[data-checked="true"] p { color: #ffffff !important; font-weight: 700 !important; }
+    div[role="radiogroup"] p { color: #64748b !important; font-weight: 600 !important; font-size: 15px !important; margin: 0; }
+
     /* Özel Renkli Kutular */
     .g4-box { background: #0f172a !important; font-family: 'Courier New', monospace; padding: 15px; border-radius: 8px; font-size: 20px; font-weight: 800; letter-spacing: 4px; text-align: center; margin-top: 15px;}
     .g4-box, .g4-box * { color: #34d399 !important; }
@@ -86,7 +103,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 3. HEADER (BAŞLIK HATASININ ÇÖZÜLDÜĞÜ KISIM - Tek satıra ve sola yaslı hale getirildi)
+# 3. HEADER
 logo_html = '<div style="font-size: 45px; display: flex; align-items: center; justify-content: center; width: 85px; height: 85px; background: rgba(255,255,255,0.05); border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); letter-spacing: -5px;">🧠🧬</div>'
 
 st.markdown(f"""
@@ -145,13 +162,17 @@ try:
     elif secim != "Tüm Veritabanı ve Ağ Haritası":
         gosterilen_df = gosterilen_df[gosterilen_df[gen_kolonu] == secim]
 
-    # 6. GÖRÜNÜM KISMI (ANA SAYFA - AĞ VE TABLO)
+    # 6. GÖRÜNÜM KISMI (ANA SAYFA)
     if (secim == "Tüm Veritabanı ve Ağ Haritası" and not arama) or len(gosterilen_df) > 1:
         
-        tab_ag, tab_veri = st.tabs(["🕸️ Hastalık-Gen Ağı", "📚 Biyoinformatik Veritabanı"])
+        # Sekme Sistemi Yerine Yeni Kusursuz Radyo Butonları
+        mod = st.radio("Seçim:", ["🕸️ Hastalık-Gen Ağı", "📚 Biyoinformatik Veritabanı"], horizontal=True, label_visibility="collapsed")
         
-        with tab_ag:
-            st.markdown(f"### 🧠 Nörodejeneratif Etkileşim Haritası")
+        # İçerik Kasasının Başlangıcı
+        st.markdown('<div class="main-content-box">', unsafe_allow_html=True)
+        
+        if mod == "🕸️ Hastalık-Gen Ağı":
+            st.markdown(f"<h3 style='margin-top:0;'>🧠 Nörodejeneratif Etkileşim Haritası</h3>", unsafe_allow_html=True)
             nodes = []
             edges = []
             
@@ -181,11 +202,13 @@ try:
             config = Config(width="100%", height=650, directed=True, physics=True, hierarchical=False)
             agraph(nodes=nodes, edges=edges, config=config)
             
-        with tab_veri:
-            st.markdown("### 📚 Veri Havuzu")
+        elif mod == "📚 Biyoinformatik Veritabanı":
+            st.markdown("<h3 style='margin-top:0;'>📚 Veri Havuzu</h3>", unsafe_allow_html=True)
             st.dataframe(gosterilen_df, use_container_width=True, hide_index=True)
+            
+        st.markdown('</div>', unsafe_allow_html=True) # Kasanın Bitişi
         
-    # 7. GÖRÜNÜM (TEK BİR GEN SEÇİLDİĞİNDE - 3 SEKME BİRDEN VAR!)
+    # 7. GÖRÜNÜM (TEK BİR GEN SEÇİLDİĞİNDE)
     elif len(gosterilen_df) == 1:
         row = gosterilen_df.iloc[0]
         hastalik = str(row.iloc[0])
@@ -196,12 +219,13 @@ try:
         elif "ALS" in hastalik: badge_class = "badge-als"
         elif "Huntington" in hastalik: badge_class = "badge-hun"
         
-        tab1, tab2, tab3 = st.tabs(["📝 Gen Analizi", "🧬 3D DNA Simülasyonu", "🕸️ Hastalık-Gen Ağı"])
+        # Sekme Sistemi Yerine Yeni Kusursuz Radyo Butonları
+        mod = st.radio("Seçim:", ["📝 Gen Analizi", "🧬 3D DNA Simülasyonu", "🕸️ Hastalık-Gen Ağı"], horizontal=True, label_visibility="collapsed")
         
-        with tab1:
-            st.markdown(f"### 🔬 Biyolojik Hedef: **{aktif_gen}**")
-            
-            # Kod Boşluk Hatasına Karşı Sola Yaslandı!
+        st.markdown('<div class="main-content-box">', unsafe_allow_html=True)
+        
+        if mod == "📝 Gen Analizi":
+            st.markdown(f"<h3 style='margin-top:0;'>🔬 Biyolojik Hedef: <b>{aktif_gen}</b></h3>", unsafe_allow_html=True)
             st.markdown(f"""
 <div class="info-card">
 <span class="badge {badge_class}">{hastalik}</span>
@@ -224,8 +248,8 @@ try:
 </div>
 """, unsafe_allow_html=True)
 
-        with tab2:
-            st.markdown(f"### 🧬 {aktif_gen} G-Quadruplex 3 Boyutlu Konformasyonu")
+        elif mod == "🧬 3D DNA Simülasyonu":
+            st.markdown(f"<h3 style='margin-top:0;'>🧬 {aktif_gen} G-Quadruplex 3 Boyutlu Konformasyonu</h3>", unsafe_allow_html=True)
             st.caption("Farenizle modeli döndürebilir, tekerlek ile yakınlaştırıp uzaklaştırabilirsiniz.")
             view = py3Dmol.view(query='pdb:1XAV', width=800, height=500)
             view.setStyle({'cartoon': {'color': 'spectrum'}, 'stick': {'radius': 0.15}})
@@ -236,8 +260,8 @@ try:
             html_code = view._make_html()
             components.html(html_code, height=500, width=800)
             
-        with tab3:
-            st.markdown(f"### 🕸️ {aktif_gen} Spesifik Etkileşim Ağı")
+        elif mod == "🕸️ Hastalık-Gen Ağı":
+            st.markdown(f"<h3 style='margin-top:0;'>🕸️ {aktif_gen} Spesifik Etkileşim Ağı</h3>", unsafe_allow_html=True)
             nodes, edges = [], []
             yolak_basit = str(row.iloc[2]).split('/')[0].split(' ve ')[0].strip()
             
@@ -250,6 +274,8 @@ try:
             
             config = Config(width="100%", height=500, directed=True, physics=True, hierarchical=False)
             agraph(nodes=nodes, edges=edges, config=config)
+            
+        st.markdown('</div>', unsafe_allow_html=True)
 
 except Exception as e:
     st.error(f"⚠️ Sistem Başlatılıyor... Sayfayı 15 saniye sonra yenileyin. (Hata: {e})")
