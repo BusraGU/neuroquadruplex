@@ -4,8 +4,8 @@ import pandas as pd
 import py3Dmol
 from streamlit_agraph import agraph, Node, Edge, Config
 
-# 1. Page Settings
-st.set_page_config(page_title="NeuroQuadruplex | Global Atlas", page_icon="🧬", layout="wide", initial_sidebar_state="expanded")
+# 1. Page Settings (Sekme Adı Güncellendi)
+st.set_page_config(page_title="NeuroQuadruplex | Target Database", page_icon="🧬", layout="wide", initial_sidebar_state="expanded")
 
 # 2. CSS 
 st.markdown("""
@@ -98,12 +98,13 @@ st.markdown("""
 # 3. HEADER
 logo_html = '<div style="font-size: 45px; display: flex; align-items: center; justify-content: center; width: 85px; height: 85px; background: rgba(255,255,255,0.05); border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); letter-spacing: -5px;">🧠🧬</div>'
 
+# 🟢 İŞTE YENİ, AÇIKLAYICI VE AKADEMİK BAŞLIĞIMIZ 🟢
 st.markdown(f"""
 <div class="header-container">
 {logo_html}
 <div>
 <h1 class="header-title">NeuroQuadruplex Atlas</h1>
-<p class="header-subtitle">Neurodegenerative G-Quadruplex Therapeutic Network</p>
+<p class="header-subtitle">A Comprehensive Database of G-Quadruplex Targets in Neurodegenerative Diseases</p>
 </div>
 </div>
 """, unsafe_allow_html=True)
@@ -125,7 +126,7 @@ try:
     # 5. Sidebar
     with st.sidebar:
         st.markdown(f'<div style="display: flex; justify-content: center; margin-bottom: 25px;">{logo_html}</div>', unsafe_allow_html=True)
-        st.title("🔬 Atlas Filter")
+        st.title("🔬 Database Filter")
         
         hastalik_listesi = df[hastalik_kolonu].dropna().unique().tolist()
         secili_hastalik = st.selectbox("🧠 Select Disease:", ["All Diseases"] + sorted(hastalik_listesi))
@@ -146,7 +147,7 @@ try:
         
         st.divider()
         csv = df.to_csv(index=False).encode('utf-8')
-        st.download_button("💾 Export Atlas (.CSV)", data=csv, file_name='NeuroQuadruplex_Global.csv', mime='text/csv')
+        st.download_button("💾 Export Database (.CSV)", data=csv, file_name='NeuroQuadruplex_Database.csv', mime='text/csv')
 
         # 🔴 İMZA VE YASAL UYARI (DISCLAIMER) 🔴
         st.markdown("""
