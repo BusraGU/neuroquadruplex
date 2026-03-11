@@ -85,7 +85,7 @@ st.sidebar.download_button(
 )
 st.sidebar.markdown("---")
 
-# 5. Overview Metrics (Dynamic count based on unique genes, not just rows, since APP/SNCA have multiple rows)
+# 5. Overview Metrics
 col1, col2, col3, col4, col5 = st.columns(5)
 col1.metric("🧬 Total G4 Targets", len(df))
 col2.metric("🧠 Alzheimer's", len(df[df["Disease"] == "Alzheimer's"]))
@@ -98,7 +98,6 @@ st.write("---")
 # 6. Search Bar
 search_query = st.text_input("🔍 Search Gene or Pathway in Database (e.g., SNCA, Autophagy, APP)", "")
 if search_query:
-    # Kullanıcı hem geni hem de yolağı arayabilir
     df = df[df["Gene"].str.contains(search_query, case=False) | df["Pathway"].str.contains(search_query, case=False)]
 
 # 7. Dataframe Rendering Function
@@ -168,5 +167,7 @@ with tab_hun:
     render_dataframe(df[df["Disease"] == "Huntington's"])
 
 # Footer
+st.markdown("---")
 st.caption("Data is compiled according to current literature standards referencing the NCBI RefSeq database.")
-st.caption("Created by Büşra Uyar")
+st.caption("**Created by Büşra Uyar**")
+st.caption("⚠️ **Disclaimer:** This database is intended for research and educational purposes only. It should not be used for medical, clinical, or diagnostic decisions.")
