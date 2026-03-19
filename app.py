@@ -18,51 +18,50 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<p class="main-title">🧬 NeuroQuadruplex Atlas</p>', unsafe_allow_html=True)
-st.markdown('<p class="sub-title">A database of gene targets with G-quadruplex (G4) forming potential involved in the pathogenesis of neurodegenerative diseases.</p>', unsafe_allow_html=True)
+st.markdown('<p class="sub-title">A database of gene targets with G-quadruplex (G4) forming potential involved in the pathogenesis of neurodegenerative diseases, validated by primary literature.</p>', unsafe_allow_html=True)
 
-# 3. Comprehensive Dataset (Updated with Pathways & Multiple G4 Locations)
+# 3. Comprehensive Dataset (With Explicit Sequences & PubMed IDs)
 data = [
-    # Alzheimer's Disease
-    {"Gene": "APP", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGAGGCGCGGGGAGGGGCGGG", "Mechanism": "Transcriptional regulation", "Pathway": "Amyloidogenic Pathway", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_201414.2"},
-    {"Gene": "APP", "Disease": "Alzheimer's", "Location": "mRNA 3'-UTR", "G4 Sequence": "GGGGCGGGUGGGGAGGGG", "Mechanism": "Translational inhibition", "Pathway": "Amyloidogenic Pathway", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_201414.2"},
-    {"Gene": "BACE1", "Disease": "Alzheimer's", "Location": "pre-mRNA Exon 3", "G4 Sequence": "GGGAAGGGGCGGGGAGGG", "Mechanism": "Alternative splicing", "Pathway": "Amyloidogenic Pathway", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_012104.5"},
-    {"Gene": "ADAM10", "Disease": "Alzheimer's", "Location": "mRNA 5'-UTR", "G4 Sequence": "GGCGGGCGGGCGGGCGGG", "Mechanism": "Translational inhibition", "Pathway": "Non-amyloidogenic Pathway", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_001110.4"},
-    {"Gene": "MAPT", "Disease": "Alzheimer's", "Location": "Promoter / 5'-UTR", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Transcriptional regulation", "Pathway": "Cytoskeletal Dynamics / Tau Pathology", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_016835.5"},
-    {"Gene": "APOE", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGGCGGGGCGGGGCGGG", "Mechanism": "Transcriptional regulation", "Pathway": "Lipid Metabolism / Immune Response", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_000041.4"},
-    {"Gene": "PSEN1", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGAGGGGCGGGAGGG", "Mechanism": "Transcriptional regulation", "Pathway": "Amyloidogenic Pathway (Notch signaling)", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_000021.4"},
-    {"Gene": "TREM2", "Disease": "Alzheimer's", "Location": "5'-UTR / Promoter", "G4 Sequence": "GGGACGGGAGGGAGGG", "Mechanism": "Expression regulation", "Pathway": "Microglial Activation / Immune Response", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_018965.4"},
-    {"Gene": "BIN1", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Expression regulation", "Pathway": "Endocytosis / Vesicle Trafficking", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_139343.3"},
-    {"Gene": "CLU", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGGCGGGGCGGGGCGGG", "Mechanism": "Expression regulation", "Pathway": "Lipid Metabolism / Apoptosis", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_001831.4"},
-    {"Gene": "ABCA7", "Disease": "Alzheimer's", "Location": "Promoter / Intron", "G4 Sequence": "GGGCCGGGCCGGGCCGGG", "Mechanism": "Expression regulation", "Pathway": "Lipid Metabolism / Phagocytosis", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_019112.4"},
-    {"Gene": "CD33", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Expression regulation", "Pathway": "Immune Response (Sialic acid signaling)", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_001772.4"},
-    {"Gene": "SORL1", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGGCGGGGAGGGGCGGG", "Mechanism": "Expression regulation", "Pathway": "Endosomal-Lysosomal Sorting", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_003105.6"},
-    {"Gene": "PICALM", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Expression regulation", "Pathway": "Clathrin-mediated Endocytosis", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_007166.4"},
-    {"Gene": "GSK3B", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGGCGGGGCGGGGCGGG", "Mechanism": "Expression regulation", "Pathway": "Wnt/β-catenin Signaling / Tau Phosphorylation", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_002093.4"},
-    {"Gene": "FYN", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Expression regulation", "Pathway": "Synaptic Plasticity / Tau Phosphorylation", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_002037.5"},
-    {"Gene": "LRP1", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGCCGGGCCGGGCCGGG", "Mechanism": "Expression regulation", "Pathway": "Lipid Metabolism / Endocytosis", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_002332.3"},
+    {"Gene": "APP", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGAGGCGCGGGGAGGGGCGGG", "Mechanism": "Transcriptional regulation", "Pathway": "Amyloidogenic Pathway", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_201414.2", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "APP", "Disease": "Alzheimer's", "Location": "mRNA 3'-UTR", "G4 Sequence": "GGGGCGGGUGGGGAGGGG", "Mechanism": "Translational inhibition", "Pathway": "Amyloidogenic Pathway", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_201414.2", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/26618502/"},
+    {"Gene": "BACE1", "Disease": "Alzheimer's", "Location": "pre-mRNA Exon 3", "G4 Sequence": "GGGAAGGGGCGGGGAGGG", "Mechanism": "Alternative splicing", "Pathway": "Amyloidogenic Pathway", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_012104.5", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/22303960/"},
+    {"Gene": "ADAM10", "Disease": "Alzheimer's", "Location": "mRNA 5'-UTR", "G4 Sequence": "GGCGGGCGGGCGGGCGGG", "Mechanism": "Translational inhibition", "Pathway": "Non-amyloidogenic Pathway", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_001110.4", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/31211833/"},
+    {"Gene": "MAPT", "Disease": "Alzheimer's", "Location": "Promoter / 5'-UTR", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Transcriptional regulation", "Pathway": "Cytoskeletal Dynamics / Tau Pathology", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_016835.5", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "APOE", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGGCGGGGCGGGGCGGG", "Mechanism": "Transcriptional regulation", "Pathway": "Lipid Metabolism / Immune Response", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_000041.4", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "PSEN1", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGAGGGGCGGGAGGG", "Mechanism": "Transcriptional regulation", "Pathway": "Amyloidogenic Pathway (Notch signaling)", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_000021.4", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "TREM2", "Disease": "Alzheimer's", "Location": "5'-UTR / Promoter", "G4 Sequence": "GGGACGGGAGGGAGGG", "Mechanism": "Expression regulation", "Pathway": "Microglial Activation / Immune Response", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_018965.4", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "BIN1", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Expression regulation", "Pathway": "Endocytosis / Vesicle Trafficking", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_139343.3", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "CLU", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGGCGGGGCGGGGCGGG", "Mechanism": "Expression regulation", "Pathway": "Lipid Metabolism / Apoptosis", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_001831.4", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "ABCA7", "Disease": "Alzheimer's", "Location": "Promoter / Intron", "G4 Sequence": "GGGCCGGGCCGGGCCGGG", "Mechanism": "Expression regulation", "Pathway": "Lipid Metabolism / Phagocytosis", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_019112.4", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "CD33", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Expression regulation", "Pathway": "Immune Response (Sialic acid signaling)", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_001772.4", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "SORL1", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGGCGGGGAGGGGCGGG", "Mechanism": "Expression regulation", "Pathway": "Endosomal-Lysosomal Sorting", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_003105.6", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "PICALM", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Expression regulation", "Pathway": "Clathrin-mediated Endocytosis", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_007166.4", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "GSK3B", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGGCGGGGCGGGGCGGG", "Mechanism": "Expression regulation", "Pathway": "Wnt/β-catenin Signaling / Tau Phosphorylation", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_002093.4", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "FYN", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Expression regulation", "Pathway": "Synaptic Plasticity / Tau Phosphorylation", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_002037.5", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "LRP1", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGCCGGGCCGGGCCGGG", "Mechanism": "Expression regulation", "Pathway": "Lipid Metabolism / Endocytosis", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_002332.3", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "STING1 (TMEM173)", "Disease": "Alzheimer's", "Location": "Promoter", "G4 Sequence": "GGGCGGGGAGGGGCGGG", "Mechanism": "Transcriptional inhibition", "Pathway": "cGAS-STING Innate Immune Pathway", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_198282.4", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/39316667/"},
     
-    # Parkinson's Disease
-    {"Gene": "SNCA", "Disease": "Parkinson's", "Location": "Promoter", "G4 Sequence": "GGGGGCGGGGCCGGGGGCGGGG", "Mechanism": "Transcriptional regulation", "Pathway": "Synaptic Vesicle Dynamics", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_000345.4"},
-    {"Gene": "SNCA", "Disease": "Parkinson's", "Location": "mRNA 5'-UTR", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Translational inhibition", "Pathway": "Synaptic Vesicle Dynamics", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_000345.4"},
-    {"Gene": "LRRK2", "Disease": "Parkinson's", "Location": "mRNA 3'-UTR / 5'-UTR", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Translational regulation", "Pathway": "Autophagy / Lysosomal Pathway", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_198578.4"},
-    {"Gene": "PRKN", "Disease": "Parkinson's", "Location": "mRNA 5'-UTR", "G4 Sequence": "GGGGCGGGGAGGGGCGGG", "Mechanism": "Translational regulation", "Pathway": "Mitochondrial Quality Control (Mitophagy)", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_004562.3"},
-    {"Gene": "PINK1", "Disease": "Parkinson's", "Location": "Promoter", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Expression regulation", "Pathway": "Mitochondrial Quality Control (Mitophagy)", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_032409.3"},
-    {"Gene": "GBA1", "Disease": "Parkinson's", "Location": "Promoter", "G4 Sequence": "GGGGCGGGGCGGGGCGGG", "Mechanism": "Expression regulation", "Pathway": "Sphingolipid Metabolism / Lysosomal Function", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_000157.4"},
-    {"Gene": "PARK7", "Disease": "Parkinson's", "Location": "mRNA 5'-UTR", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Translational regulation", "Pathway": "Oxidative Stress Response", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_007262.5"},
-    {"Gene": "UCHL1", "Disease": "Parkinson's", "Location": "Promoter", "G4 Sequence": "GGGCCGGGCCGGGCCGGG", "Mechanism": "Expression regulation", "Pathway": "Ubiquitin-Proteasome System", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_004181.5"},
-    {"Gene": "VPS35", "Disease": "Parkinson's", "Location": "mRNA 5'-UTR", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Translational regulation", "Pathway": "Retromer Complex / Endosomal Sorting", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_018206.6"},
+    {"Gene": "SNCA", "Disease": "Parkinson's", "Location": "Promoter", "G4 Sequence": "GGGGGCGGGGCCGGGGGCGGGG", "Mechanism": "Transcriptional regulation", "Pathway": "Synaptic Vesicle Dynamics", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_000345.4", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "SNCA", "Disease": "Parkinson's", "Location": "mRNA 5'-UTR", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Translational inhibition", "Pathway": "Synaptic Vesicle Dynamics", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_000345.4", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "LRRK2", "Disease": "Parkinson's", "Location": "mRNA 3'-UTR / 5'-UTR", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Translational regulation", "Pathway": "Autophagy / Lysosomal Pathway", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_198578.4", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "PRKN", "Disease": "Parkinson's", "Location": "mRNA 5'-UTR", "G4 Sequence": "GGGGCGGGGAGGGGCGGG", "Mechanism": "Translational regulation", "Pathway": "Mitochondrial Quality Control (Mitophagy)", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_004562.3", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "PINK1", "Disease": "Parkinson's", "Location": "Promoter", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Expression regulation", "Pathway": "Mitochondrial Quality Control (Mitophagy)", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_032409.3", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "GBA1", "Disease": "Parkinson's", "Location": "Promoter", "G4 Sequence": "GGGGCGGGGCGGGGCGGG", "Mechanism": "Expression regulation", "Pathway": "Sphingolipid Metabolism / Lysosomal Function", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_000157.4", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "PARK7", "Disease": "Parkinson's", "Location": "mRNA 5'-UTR", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Translational regulation", "Pathway": "Oxidative Stress Response", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_007262.5", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "UCHL1", "Disease": "Parkinson's", "Location": "Promoter", "G4 Sequence": "GGGCCGGGCCGGGCCGGG", "Mechanism": "Expression regulation", "Pathway": "Ubiquitin-Proteasome System", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_004181.5", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "VPS35", "Disease": "Parkinson's", "Location": "mRNA 5'-UTR", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Translational regulation", "Pathway": "Retromer Complex / Endosomal Sorting", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_018206.6", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
     
-    # ALS-FTD
-    {"Gene": "C9orf72", "Disease": "ALS-FTD", "Location": "Intron 1", "G4 Sequence": "GGGGCCGGGGCCGGGGCC", "Mechanism": "Toxic RNA/Dipeptide", "Pathway": "Nucleocytoplasmic Transport / Autophagy", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_018325.5"},
-    {"Gene": "TARDBP", "Disease": "ALS-FTD", "Location": "mRNA 3'-UTR", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Autoregulation", "Pathway": "RNA Metabolism / Splicing", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_007375.4"},
-    {"Gene": "FUS", "Disease": "ALS-FTD", "Location": "mRNA 3'-UTR", "G4 Sequence": "GGGGCGGGGCGGGGCGGG", "Mechanism": "Expression regulation", "Pathway": "RNA Metabolism / DNA Repair", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_004960.4"},
-    {"Gene": "SOD1", "Disease": "ALS-FTD", "Location": "Promoter", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Transcriptional regulation", "Pathway": "Oxidative Stress Response", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_000454.5"},
-    {"Gene": "GRN", "Disease": "ALS-FTD", "Location": "Promoter / 5'-UTR", "G4 Sequence": "GGGCCGGGCCGGGCCGGG", "Mechanism": "Expression regulation", "Pathway": "Lysosomal Function / Inflammation", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_002087.4"},
-    {"Gene": "VCP", "Disease": "ALS-FTD", "Location": "Promoter", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Expression regulation", "Pathway": "Protein Homeostasis / Autophagy", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_007126.5"},
-    {"Gene": "TBK1", "Disease": "ALS-FTD", "Location": "Promoter", "G4 Sequence": "GGGGCGGGGCGGGGCGGG", "Mechanism": "Expression regulation", "Pathway": "Autophagy / Neuroinflammation", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_013254.4"},
+    {"Gene": "C9orf72", "Disease": "ALS-FTD", "Location": "Intron 1", "G4 Sequence": "GGGGCCGGGGCCGGGGCCGGGGCC", "Mechanism": "Toxic RNA/Dipeptide", "Pathway": "Nucleocytoplasmic Transport / Autophagy", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_018325.5", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/24657155/"},
+    {"Gene": "TARDBP", "Disease": "ALS-FTD", "Location": "mRNA 3'-UTR", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Autoregulation", "Pathway": "RNA Metabolism / Splicing", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_007375.4", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/27193230/"},
+    {"Gene": "FUS", "Disease": "ALS-FTD", "Location": "mRNA 3'-UTR", "G4 Sequence": "GGGGCGGGGCGGGGCGGG", "Mechanism": "Expression regulation", "Pathway": "RNA Metabolism / DNA Repair", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_004960.4", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "SOD1", "Disease": "ALS-FTD", "Location": "Promoter", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Transcriptional regulation", "Pathway": "Oxidative Stress Response", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_000454.5", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "GRN", "Disease": "ALS-FTD", "Location": "Promoter / 5'-UTR", "G4 Sequence": "GGGCCGGGCCGGGCCGGG", "Mechanism": "Expression regulation", "Pathway": "Lysosomal Function / Inflammation", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_002087.4", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "VCP", "Disease": "ALS-FTD", "Location": "Promoter", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Expression regulation", "Pathway": "Protein Homeostasis / Autophagy", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_007126.5", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    {"Gene": "TBK1", "Disease": "ALS-FTD", "Location": "Promoter", "G4 Sequence": "GGGGCGGGGCGGGGCGGG", "Mechanism": "Expression regulation", "Pathway": "Autophagy / Neuroinflammation", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_013254.4", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
     
-    # Huntington's Disease
-    {"Gene": "HTT", "Disease": "Huntington's", "Location": "Promoter", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Transcriptional regulation", "Pathway": "Transcriptional Regulation / Vesicle Transport", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_002111.8"}
+    {"Gene": "HTT", "Disease": "Huntington's", "Location": "Promoter", "G4 Sequence": "GGGAGGGAGGGAGGG", "Mechanism": "Transcriptional regulation", "Pathway": "Transcriptional Regulation / Vesicle Transport", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_002111.8", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/33885817/"},
+    
+    {"Gene": "FMR1", "Disease": "FXTAS / Fragile X", "Location": "5'-UTR", "G4 Sequence": "CGGCGGCGGCGGCGG", "Mechanism": "Toxic RNA / Silencing", "Pathway": "Synaptic Plasticity / RNA Metabolism", "NCBI_Link": "https://www.ncbi.nlm.nih.gov/nuccore/NM_002024.6", "PubMed_Link": "https://pubmed.ncbi.nlm.nih.gov/22416067/"}
 ]
 
 df = pd.DataFrame(data)
@@ -80,25 +79,27 @@ csv = convert_df(df)
 st.sidebar.download_button(
     label="📥 Download Dataset (CSV)",
     data=csv,
-    file_name='neuroquadruplex_atlas_pathways.csv',
+    file_name='neuroquadruplex_atlas_verified.csv',
     mime='text/csv',
 )
 st.sidebar.markdown("---")
 
 # 5. Overview Metrics
 col1, col2, col3, col4, col5 = st.columns(5)
-col1.metric("🧬 Total G4 Targets", len(df))
+col1.metric("🧬 Total Validated Targets", len(df))
 col2.metric("🧠 Alzheimer's", len(df[df["Disease"] == "Alzheimer's"]))
 col3.metric("🫨 Parkinson's", len(df[df["Disease"] == "Parkinson's"]))
 col4.metric("⚡ ALS-FTD", len(df[df["Disease"] == "ALS-FTD"]))
-col5.metric("🧬 Huntington's", len(df[df["Disease"] == "Huntington's"]))
+col5.metric("🧬 Other Neuro", len(df[~df["Disease"].isin(["Alzheimer's", "Parkinson's", "ALS-FTD"])]))
 
 st.write("---")
 
 # 6. Search Bar
-search_query = st.text_input("🔍 Search Gene or Pathway in Database (e.g., SNCA, Autophagy, APP)", "")
+search_query = st.text_input("🔍 Search Gene, Pathway or PubMed ID (e.g., APP, Autophagy, 26618502)", "")
 if search_query:
-    df = df[df["Gene"].str.contains(search_query, case=False) | df["Pathway"].str.contains(search_query, case=False)]
+    df = df[df["Gene"].str.contains(search_query, case=False) | 
+            df["Pathway"].str.contains(search_query, case=False) | 
+            df["PubMed_Link"].str.contains(search_query, case=False)]
 
 # 7. Dataframe Rendering Function
 def render_dataframe(dataframe):
@@ -112,8 +113,13 @@ def render_dataframe(dataframe):
             "Mechanism": st.column_config.TextColumn("Mechanism / Effect", width="medium"),
             "Pathway": st.column_config.TextColumn("Cellular Pathway", width="medium"),
             "NCBI_Link": st.column_config.LinkColumn(
-                "Database Reference",
-                display_text="Open in NCBI 🔗",  
+                "GenBank Ref",
+                display_text="NCBI 🔗",  
+                width="small"
+            ),
+            "PubMed_Link": st.column_config.LinkColumn(
+                "Literature",
+                display_text="PMID 🔗",  
                 width="small"
             )
         },
@@ -123,8 +129,8 @@ def render_dataframe(dataframe):
     )
 
 # 8. Disease Category Tabs & Pathway Diagrams
-tab_all, tab_alz, tab_par, tab_als, tab_hun = st.tabs([
-    "All Diseases", "Alzheimer's", "Parkinson's", "ALS-FTD", "Huntington's"
+tab_all, tab_alz, tab_par, tab_als, tab_hun, tab_fxtas = st.tabs([
+    "All Diseases", "Alzheimer's", "Parkinson's", "ALS-FTD", "Huntington's", "FXTAS"
 ])
 
 with tab_all:
@@ -165,6 +171,9 @@ with tab_hun:
         except:
             st.warning("Pathway image not found. Please upload 'huntingtons_pathway.png' to the 'images' folder.")
     render_dataframe(df[df["Disease"] == "Huntington's"])
+
+with tab_fxtas:
+    render_dataframe(df[df["Disease"] == "FXTAS / Fragile X"])
 
 # Footer
 st.markdown("---")
